@@ -1,8 +1,8 @@
 -- Use this file to define your SQL tables
 -- The SQL in this file will be executed when you run `npm run setup-db`
 
-DROP TABLE IF EXISTS userstodos;
 DROP TABLE IF EXISTS todos;
+DROP TABLE IF EXISTS userstodos;
 
 CREATE TABLE userstodos (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
