@@ -10,14 +10,14 @@ const mockUser = {
   password: '123456',
 };
 
-// const signUpAndIn = async (userProps = {}) => {
-//   const password = userProps.password ?? mockUser.password;
-//   const agent = request.agent(app);
-//   const user = await UserService.create({ ...mockUser, ...userProps });
-//   const { email } = user;
-//   await agent.post('/api/v1/users/sessions').send({ email, password });
-//   return [agent, user];
-// };
+const signUpAndIn = async (userProps = {}) => {
+  const password = userProps.password ?? mockUser.password;
+  const agent = request.agent(app);
+  const user = await UserService.create({ ...mockUser, ...userProps });
+  const { email } = user;
+  await agent.post('/api/v1/users/sessions').send({ email, password });
+  return [agent, user];
+};
 
 describe('users', () => {
   beforeEach(() => {
@@ -34,11 +34,19 @@ describe('users', () => {
   });
 
   it('signs in a user and creates a cookie', async () => {
-    const res1 = await request(app).post('/api/v1/users').send(mockUser);
-    console.log('res1', res1.body);
+    await request(app).post('/api/v1/users').send(mockUser);
     const res = await request(app).post('/api/v1/users/sessions').send(mockUser);
-    console.log('res.body', res.body);
     expect(res.status).toEqual(200);
+  });
+
+  it('/me returns the authenticated user', async () => {
+    const [agent, user] = await signUpAndIn();
+    const res = await agent.get('/api/v1/users/me');
+    expect(res.body).toEqual({
+      ...user,
+      exp: expect.any(Number),
+      iat: expect.any(Number)
+    });
   });
 
   afterAll(() => {
