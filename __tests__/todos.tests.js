@@ -69,9 +69,18 @@ describe('todos', () => {
     expect(res.status).toEqual(401);
   });
 
-  // it('PUT /api/v1/todos/1 should update a todo for the authenticated and authorized user', async() => {
-  //   const
-  // })
+  it('PUT /api/v1/todos/1 should update a todo for the authenticated and authorized user', async () => {
+    const [agent, user] = await signUpAndIn();
+    const todo = await Todo.insert({
+      description: 'Take a nap',
+      userId: user.id
+    });
+    const res = await agent
+      .put(`/api/v1/todos/${todo.id}`)
+      .send({ complete: true });
+    expect(res.status).toEqual(200);
+    expect(res.body).toEqual({ ...todo, complete: true, createdAt: expect.any(String) });
+  });
   afterAll(() => {
     pool.end();
   });
