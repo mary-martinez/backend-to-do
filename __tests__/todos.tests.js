@@ -63,8 +63,15 @@ describe('todos', () => {
       complete: false,
       createdAt: expect.any(String)
     });
-
   });
+  it('GET /api/v1/todos should return a 401 if not authenticated', async () => {
+    const res = await request(app).get('/api/v1/todos');
+    expect(res.status).toEqual(401);
+  });
+
+  // it('PUT /api/v1/todos/1 should update a todo for the authenticated and authorized user', async() => {
+  //   const
+  // })
   afterAll(() => {
     pool.end();
   });
